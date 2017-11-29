@@ -7,7 +7,7 @@ projects: [spring-framework, spring-hateoas, spring-security, spring-security-oa
 #  REST service with Spring HATEOAS and  Spring security Oauth
 
 Hypermedia-driven REST service with Spring HATEOAS, a library of APIs that you can use to easily create links pointing to Spring MVC controllers, build up resource representations, and control how they're rendered into supported hypermedia formats such as HAL.
-we’re going to build a web application, using jpa to model records in an h2 database.[Web, JPA, H2] 
+weï¿½re going to build a web application, using jpa to model records in an h2 database.[Web, JPA, H2] 
 
 The service will accept HTTP   requests at:
 
@@ -48,7 +48,7 @@ Spring MVC provides   support for unit testing HTTP endpoints.
 -  Reference documentation - [html](http://docs.spring.io/spring-hateoas/docs/current/reference/html/), [pdf](http://docs.spring.io/spring-hateoas/docs/current/reference/pdf/spring-hateoas-reference.pdf)
 - [JavaDoc](http://docs.spring.io/spring-hateoas/docs/current-SNAPSHOT/api/)
 - [Getting started guide](https://spring.io/guides/gs/rest-hateoas/)
-
+```
  http://localhost:8080/connections/1 GET
 {
     "connection": {
@@ -120,7 +120,8 @@ Spring MVC provides   support for unit testing HTTP endpoints.
         }
     }
 }
-
+```
+```
  http://localhost:8080/profiles/1 GET
 {
     "_embedded": {
@@ -193,7 +194,8 @@ Spring MVC provides   support for unit testing HTTP endpoints.
                     }
                 }
             }
-}         
+}      
+   ```
    http://localhost:8080/consumptions/JAN GET
   
  {
@@ -238,4 +240,4 @@ Spring MVC provides   support for unit testing HTTP endpoints.
         ]
     }
 }
-
+```
