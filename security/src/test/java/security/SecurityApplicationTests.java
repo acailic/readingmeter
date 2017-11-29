@@ -34,9 +34,9 @@ import static org.junit.Assert.*;
 
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = {Application.class, ApplicationTests.ExtraConfig.class},
+@SpringBootTest(classes = {Application.class, SecurityApplicationTests.ExtraConfig.class},
 	webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class ApplicationTests {
+public class SecurityApplicationTests {
 
 	@Autowired
 	TestRestTemplate testRestTemplate;
