@@ -3,7 +3,7 @@
 ---
 tags: [rest, hateoas, hypermedia, security, testing, oauth]
 projects: [spring-framework, spring-hateoas, spring-security, spring-security-oauth]
-# readingmeter
+# Reading meter
 #  REST service with Spring HATEOAS and  Spring security Oauth
 
 Hypermedia-driven REST service with Spring HATEOAS, a library of APIs that you can use to easily create links pointing to Spring MVC controllers, build up resource representations, and control how they're rendered into supported hypermedia formats such as HAL.
@@ -12,7 +12,7 @@ we’re going to build a web application, using jpa to model records in an h2 data
 The service will accept HTTP   requests at:
 
     http://localhost:8080/connections  GET POST
-	
+ 
     http://localhost:8080/connections/{connectionId}  GET PUT DELETE
 	
     http://localhost:8080/profiles GET POST
@@ -48,3 +48,194 @@ Spring MVC provides   support for unit testing HTTP endpoints.
 -  Reference documentation - [html](http://docs.spring.io/spring-hateoas/docs/current/reference/html/), [pdf](http://docs.spring.io/spring-hateoas/docs/current/reference/pdf/spring-hateoas-reference.pdf)
 - [JavaDoc](http://docs.spring.io/spring-hateoas/docs/current-SNAPSHOT/api/)
 - [Getting started guide](https://spring.io/guides/gs/rest-hateoas/)
+
+ http://localhost:8080/connections/1 GET
+{
+    "connection": {
+        "id": 1,
+        "profile": {
+            "name": "B"
+        },
+        "meterReading": [
+            {
+                "month": "OCT",
+                "meterReading": 10
+            },
+            {
+                "month": "APR",
+                "meterReading": 4
+            },
+            {
+                "month": "AUG",
+                "meterReading": 8
+            },
+            {
+                "month": "MAR",
+                "meterReading": 3
+            },
+            {
+                "month": "MAY",
+                "meterReading": 5
+            },
+            {
+                "month": "FEB",
+                "meterReading": 2
+            },
+            {
+                "month": "NOV",
+                "meterReading": 11
+            },
+            {
+                "month": "JUL",
+                "meterReading": 7
+            },
+            {
+                "month": "JAN",
+                "meterReading": 1
+            },
+            {
+                "month": "JUN",
+                "meterReading": 6
+            },
+            {
+                "month": "DEC",
+                "meterReading": 12
+            },
+            {
+                "month": "SEP",
+                "meterReading": 9
+            }
+        ],
+        "uri": "http://connection.com/1/"
+    },
+    "_links": {
+        "connection-uri": {
+            "href": "http://connection.com/1/"
+        },
+        "connections": {
+            "href": "http://localhost:8080/connections"
+        },
+        "self": {
+            "href": "http://localhost:8080/connections/1"
+        }
+    }
+}
+
+ http://localhost:8080/profiles/1 GET
+{
+    "_embedded": {
+        "profileResourceList": [
+            {
+                "profile": {
+                    "id": 1,
+                    "name": "A",
+                    "fractions": [
+                        {
+                            "month": "JUL",
+                            "fraction": 0
+                        },
+                        {
+                            "month": "JUN",
+                            "fraction": 0
+                        },
+                        {
+                            "month": "MAY",
+                            "fraction": 0.1
+                        },
+                        { http://localhost:8080/profiles/1 GET
+                            "month": "JAN",
+                            "fraction": 0.1
+                        },
+                        {
+                            "month": "OCT",
+                            "fraction": 0.1
+                        },
+                        {
+                            "month": "SEP",
+                            "fraction": 0.1
+                        },
+                        {
+                            "month": "APR",
+                            "fraction": 0.1
+                        },
+                        {
+                            "month": "AUG",
+                            "fraction": 0.1
+                        },
+                        {
+                            "month": "MAR",
+                            "fraction": 0.1
+                        },
+                        {
+                            "month": "FEB",
+                            "fraction": 0.1
+                        },
+                        {
+                            "month": "DEC",
+                            "fraction": 0.1
+                        },
+                        {
+                            "month": "NOV",
+                            "fraction": 0.1
+                        }
+                    ],
+                    "uri": "http://profile.com/1/\""
+                },
+                "_links": {
+                    "profile-uri": {
+                        "href": "http://profile.com/1/\""
+                    },
+                    "profiles": {
+                        "href": "http://localhost:8080/profiles"
+                    },
+                    "self": {
+                        "href": "http://localhost:8080/profiles/1"
+                    }
+                }
+            }
+}         
+   http://localhost:8080/consumptions/JAN GET
+  
+ {
+    "_embedded": {
+        "consumptionResourceList": [
+            {
+                "consumption": {
+                    "month": "JAN",
+                    "consumption": 1,
+                    "uri": "http://connection.com/1//consumptions/JAN"
+                },
+                "_links": {
+                    "consumption-uri": {
+                        "href": "http://connection.com/1//consumptions/JAN"
+                    },
+                    "consumptions": {
+                        "href": "http://localhost:8080/consumptions/JAN"
+                    },
+                    "self": {
+                        "href": "http://localhost:8080/consumptions/JAN/1"
+                    }
+                }
+            },
+            {
+                "consumption": {
+                    "month": "JAN",
+                    "consumption": 1,
+                    "uri": "http://connection.com/1//consumptions/JAN"
+                },
+                "_links": {
+                    "consumption-uri": {
+                        "href": "http://connection.com/1//consumptions/JAN"
+                    },
+                    "consumptions": {
+                        "href": "http://localhost:8080/consumptions/JAN"
+                    },
+                    "self": {
+                        "href": "http://localhost:8080/consumptions/JAN/1"
+                    }
+                }
+            }
+        ]
+    }
+}
+
