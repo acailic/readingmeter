@@ -40,7 +40,7 @@ Using HTTPS (SSL/TLS) to prevent Man-in-the-Middle Attacks:`security/src/main/re
 requires a signed certificate certificate and a certificate password : $ keytool -genkey -alias bookmarks -keyalg RSA -keystore src/main/resources/tomcat.keystore
 
 ## Testing a REST ServiceSo,  the following:
- [IN PROGRESS]
+ 
 Spring MVC provides   support for unit testing HTTP endpoints.
 
  ```
@@ -192,7 +192,7 @@ Spring MVC provides   support for unit testing HTTP endpoints.
 }      
    ```
    http://localhost:8080/consumptions/JAN GET
-  
+  ```
  {
     "_embedded": {
         "consumptionResourceList": [
