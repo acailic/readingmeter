@@ -243,6 +243,7 @@ http://localhost:8080/profiles/1 GET
 ```
 
 Future tasks: Pagination to add (already in repositories)
+              entity-uri is just for simulation.
               
 ## Resources
 
