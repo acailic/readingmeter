@@ -44,6 +44,8 @@ requires a signed certificate certificate and a certificate password : $ keytool
 Spring MVC provides   support for unit testing HTTP endpoints.
 
  http://localhost:8080/connections/1 GET
+ 
+ 
  ```
 {
     "connection": {
