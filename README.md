@@ -39,12 +39,12 @@ We can explicitly enable XSS for well-known clients by exposing CORS (cross-orig
 Using HTTPS (SSL/TLS) to prevent Man-in-the-Middle Attacks:`security/src/main/resources/application-https.properties`. the app is run when *SPRING_PROFILES_ACTIVE* configured with profile *https*.
 requires a signed certificate certificate and a certificate password : $ keytool -genkey -alias bookmarks -keyalg RSA -keystore src/main/resources/tomcat.keystore
 
-## Testing a REST ServiceSo,  the following:
+## Testing a REST Service,  the following:
  
 Spring MVC provides   support for unit testing HTTP endpoints.
 
- ```
  http://localhost:8080/connections/1 GET
+ ```
 {
     "connection": {
         "id": 1,
@@ -116,7 +116,7 @@ Spring MVC provides   support for unit testing HTTP endpoints.
     }
 }
 ```
- http://localhost:8080/profiles/1 GET
+http://localhost:8080/profiles/1 GET
  
 ```
 {
@@ -192,7 +192,8 @@ Spring MVC provides   support for unit testing HTTP endpoints.
             }
 }      
  ``` 
-   http://localhost:8080/consumptions/JAN GET
+  
+  http://localhost:8080/consumptions/JAN GET
    
 ```
  {
