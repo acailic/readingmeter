@@ -117,8 +117,8 @@ Spring MVC provides   support for unit testing HTTP endpoints.
 }
 ```
  http://localhost:8080/profiles/1 GET
-```
  
+```
 {
     "_embedded": {
         "profileResourceList": [
@@ -191,9 +191,10 @@ Spring MVC provides   support for unit testing HTTP endpoints.
                 }
             }
 }      
-   ```
+ ``` 
    http://localhost:8080/consumptions/JAN GET
-  ```
+   
+```
  {
     "_embedded": {
         "consumptionResourceList": [
