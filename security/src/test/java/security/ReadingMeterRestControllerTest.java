@@ -1,8 +1,7 @@
 package security;
 
-import org.springframework.security.web.FilterChainProxy;
+import org.springframework.security.core.Authentication;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.servlet.request.RequestPostProcessor;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import readingmeter.*;
 import readingmeter.repositories.AccountRepository;
@@ -23,6 +22,7 @@ import readingmeter.repositories.ProfileRepository;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.security.Principal;
 import java.util.*;
 
 import static org.hamcrest.Matchers.*;
@@ -35,8 +35,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebAppConfiguration
 public class ReadingMeterRestControllerTest {
 
-	private MediaType contentType = new MediaType(MediaType.APPLICATION_JSON.getType(), MediaType.APPLICATION_JSON.getSubtype(), Charset.forName("utf8"));
-
+	private MediaType contentType = new MediaType("application", "hal+json", Charset.forName("UTF-8"));;
 	private String userName = "ilke";
 
 	private HttpMessageConverter mappingJackson2HttpMessageConverter;
@@ -48,9 +47,6 @@ public class ReadingMeterRestControllerTest {
 
 
 	@Autowired
-	private FilterChainProxy springSecurityFilterChain;
-
-	@Autowired
 	private ProfileRepository profileRepository;
 
 	@Autowired
@@ -60,13 +56,10 @@ public class ReadingMeterRestControllerTest {
 	private WebApplicationContext webApplicationContext;
 
 	private MockMvc mockMvc;
+	private Authentication authentication;
 
 	@Autowired
 	private AccountRepository accountRepository;
-
-	@Autowired
-	private OAuthHelper authHelper;
-
 
 	@Autowired
 	void setConverters(HttpMessageConverter<?>[] converters) {
@@ -77,10 +70,8 @@ public class ReadingMeterRestControllerTest {
 
 	@Before
 	public void setup() throws Exception {
-		this.mockMvc = MockMvcBuilders.webAppContextSetup(this.webApplicationContext)
-				.addFilter(springSecurityFilterChain).build();
-
-		this.account = accountRepository.save(new Account(userName, "password"));
+		this.mockMvc = MockMvcBuilders.webAppContextSetup(this.webApplicationContext).
+				build();
 		Set<Fraction> fractions = new HashSet();
 		fractions.add(new Fraction(Month.JAN, 0.1));
 		fractions.add(new Fraction(Month.FEB, 0.1));
@@ -110,7 +101,7 @@ public class ReadingMeterRestControllerTest {
 		fractionsNew.add(new Fraction(Month.OCT, 0.1));
 		fractionsNew.add(new Fraction(Month.NOV, 0.1));
 		fractionsNew.add(new Fraction(Month.DEC, 0.0));
-		Profile profile2 = new Profile(account, "B", fractionsNew, "http://profile.com/2/\"");
+		Profile profile2 = new Profile(this.account, "B", fractionsNew, "http://profile.com/2/\"");
 		this.profileList.add(this.profileRepository.save(profile2));
 		Set<MeterReading> meterReadings = new HashSet();
 		meterReadings.add(new MeterReading(Month.JAN, 1));
@@ -146,26 +137,27 @@ public class ReadingMeterRestControllerTest {
 
 	}
 
-	@Test public void userNotFound() throws Exception {
-		mockMvc.perform(post("/profiles1/").content(this.json(new Profile())).contentType(contentType)).andExpect(status().isNotFound());
+	@Test
+	public void userNotFound() throws Exception {
+		mockMvc.perform(post("/profiles1/").content(this.json(new Profile())).contentType(contentType) ).andExpect(status().isNotFound());
 	}
 
 	@Test
-	public void readSingleProfile() throws Exception {
-		RequestPostProcessor bearerToken =  authHelper.addBearerToken ("ilke","USER_ROLE");
-		mockMvc.perform(get("/profiles/" + this.profileList.get(0).getId()).with(bearerToken)
-		).andExpect(status().isOk()).andExpect(content().contentType(contentType)).andExpect(jsonPath("$.id", is(this.profileList.get(0).getId().intValue())))
-				.andExpect(jsonPath("$.uri", is("http://profile.com/1/" + userName)));
+	public void readProfiles() throws Exception {
+		Principal principal = getPrincipal();
+		mockMvc.perform(get("/profiles").principal(principal)
+		)
+				.andExpect(status().isOk())
+				.andExpect(content().contentType(contentType)).andExpect(status().isOk()).andExpect(jsonPath("$._embedded.profileResourceList", hasSize(2)));
 	}
 
 	@Test
 	public void readConnections() throws Exception {
-		RequestPostProcessor bearerToken =  authHelper.addBearerToken ("ilke","USER_ROLE");
-		mockMvc.perform(get("/connections").with(bearerToken)
-		).andExpect(status().isOk()).andExpect(content().contentType(contentType)).andExpect(jsonPath("$", hasSize(2)))
-				.andExpect(jsonPath("$[0].id", is(this.connectionList.get(0).getId().intValue()))).andExpect(jsonPath("$[0].uri", is("http://connection.com/1/" + userName)))
-				.andExpect(jsonPath("$[1].id", is(this.connectionList.get(1).getId().intValue()))).andExpect(jsonPath("$[1].uri", is("http://connection.com/2/" + userName)));
+		Principal principal = getPrincipal();
+		mockMvc.perform(get("/connections").principal(principal)
+		).andExpect(status().isOk()).andExpect(jsonPath("$._embedded.connectionResourceList", hasSize(2)));
 	}
+
 
 	@Test
 	public void createProfile() throws Exception {
@@ -184,9 +176,8 @@ public class ReadingMeterRestControllerTest {
 		fractions.add(new Fraction(Month.NOV, 0.1));
 		fractions.add(new Fraction(Month.DEC, 0.1));
 		String profileJson = json(new Profile(this.account, "A", fractions, "http://profile.com/A"));
-		//RequestPostProcessor bearerToken = authHelper.addBearerToken("test", "ROLE_USER");
-	    RequestPostProcessor bearerToken =  authHelper.addBearerToken ("ilke","USER_ROLE");
-		this.mockMvc.perform(post("/profiles").with(bearerToken)
+		Principal principal = getPrincipal();
+		this.mockMvc.perform(post("/profiles").principal(principal)
 				.contentType(contentType).content(profileJson)).andExpect(status().isCreated());
 	}
 
@@ -195,5 +186,12 @@ public class ReadingMeterRestControllerTest {
 		this.mappingJackson2HttpMessageConverter.write(o, MediaType.APPLICATION_JSON, mockHttpOutputMessage);
 		return mockHttpOutputMessage.getBodyAsString();
 	}
-
+	private Principal getPrincipal() {
+		return new Principal() {
+			@Override
+			public String getName() {
+				return "ilke";
+			}
+		};
+	}
 }
