@@ -175,7 +175,7 @@ public class ReadingMeterRestControllerTest {
 		fractions.add(new Fraction(Month.OCT, 0.1));
 		fractions.add(new Fraction(Month.NOV, 0.1));
 		fractions.add(new Fraction(Month.DEC, 0.1));
-		String profileJson = json(new Profile(this.account, "A", fractions, "http://profile.com/A"));
+		String profileJson = json(new Profile(this.account, "L", fractions, "http://profile.com/A"));
 		Principal principal = getPrincipal();
 		this.mockMvc.perform(post("/profiles").principal(principal)
 				.contentType(contentType).content(profileJson)).andExpect(status().isCreated());

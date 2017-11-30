@@ -43,7 +43,7 @@ public class ConnectionRestController {
     }
 
     @Autowired
-    ConnectionRestController(ConnectionRepository connectionRepository,
+    public ConnectionRestController(ConnectionRepository connectionRepository,
                              AccountRepository accountRepository,
                              ProfileRepository profileRepository) {
         this.connectionRepository = connectionRepository;
@@ -52,19 +52,17 @@ public class ConnectionRestController {
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    Resources<ConnectionResource> readConnections(Principal principal) {
+    public Resources<ConnectionResource> readConnections(Principal principal) {
         this.validateUser(principal);
-
         List<ConnectionResource> connectionResourceList = this.connectionRepository
                 .findByProfileAccountUsername(principal.getName()).stream()
                 .map(ConnectionResource::new)
                 .collect(Collectors.toList());
-        List<Connection> connections = this.connectionRepository.findAll();
         return new Resources<>(connectionResourceList);
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    ResponseEntity<?> add(Principal principal, @Valid @RequestBody Connection inputConnection) {
+    public ResponseEntity<?> add(Principal principal, @Valid @RequestBody Connection inputConnection) {
         this.validateUser(principal);
         this.validateConnection(inputConnection,principal.getName());
         return accountRepository
@@ -86,6 +84,37 @@ public class ConnectionRestController {
                 .orElse(ResponseEntity.noContent().build());
     }
 
+    @RequestMapping(method = RequestMethod.PUT, value = "/{connectionId}")
+    public ResponseEntity<?> put(Principal principal, @Valid @RequestBody Connection inputConnection,@PathVariable Long connectionId) {
+        this.validateUser(principal);
+        this.validateEntity(connectionId);
+        this.validateUpdateId(inputConnection, connectionId);
+        this.validateConnection(inputConnection,principal.getName());
+        return accountRepository
+                .findByUsername(principal.getName())
+                .map(account -> {
+                    Connection connection = connectionRepository.save(
+                            new Connection(//account,
+                                    connectionId,
+                                    getByNameAndAccountUsername(inputConnection.getProfile().getName(),account.getUsername()),
+                                    inputConnection.getMeterReading(),
+                                    inputConnection.getUri()));
+
+                    Link forOneConnection = new ConnectionResource(connection).getLink(Link.REL_SELF);
+
+                    return ResponseEntity.ok(URI
+                            .create(forOneConnection.getHref()));
+                })
+                .orElse(ResponseEntity.noContent().build());
+    }
+
+    private void validateUpdateId(Connection inputConnection, Long connectionId) {
+        if(connectionId.equals(inputConnection.getId())){
+            throw new ValidationException("Id can't be changed.");
+        }
+    }
+
+
     @RequestMapping(method = RequestMethod.GET, value = "/{connectionId}")
     ConnectionResource readConnection(Principal principal, @PathVariable Long connectionId) {
         this.validateEntity(connectionId);
@@ -94,15 +123,15 @@ public class ConnectionRestController {
                 this.connectionRepository.findOne(connectionId));
     }
 
-/*    @RequestMapping(method = RequestMethod.DELETE, value = "/{connectionId}")
-    ConnectionResource deleteConnection(Principal principal, @PathVariable Long connectionId) {
+    @RequestMapping(method = RequestMethod.DELETE, value = "/{connectionId}")
+    public ResponseEntity<?> deleteConnection(Principal principal, @PathVariable Long connectionId) {
         this.validateEntity(connectionId);
         this.validateUser(principal);
-        return new ConnectionResource(
-                this.connectionRepository.delete(connectionId));
-    }*/
+        this.connectionRepository.delete(connectionId);
+        return ResponseEntity.ok().build();
+    }
 
-    private void validateUser(Principal principal) {
+    private void validateUser(Principal principal) throws UserNotFoundException {
         String userId = principal.getName();
         this.accountRepository
                 .findByUsername(userId)
@@ -110,7 +139,7 @@ public class ConnectionRestController {
                         () -> new UserNotFoundException(userId));
     }
 
-    private void validateEntity(Long connectionId) {
+    private void validateEntity(Long connectionId)throws EntityNotFoundException {
         if(!this.connectionRepository
                 .exists(connectionId)){
             throw new EntityNotFoundException(connectionId.toString());

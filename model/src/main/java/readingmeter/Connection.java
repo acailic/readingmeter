@@ -1,7 +1,6 @@
 package readingmeter;
 
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
@@ -20,12 +19,9 @@ public class Connection {
     private Profile profile;
 
 
-    @OneToMany(cascade = {CascadeType.ALL})
+    @OneToMany(cascade = {CascadeType.ALL},orphanRemoval = true)
     private Set<MeterReading> meterReading;
 
-    @JsonIgnore
-    @OneToMany
-    private Set<Consumption> consumptions;
 
     public String uri;
 
@@ -72,8 +68,5 @@ public class Connection {
         this.uri = uri;
     }
 
-    public Set<Consumption> getConsumptions() {
-        return consumptions;
-    }
 
 }

@@ -9,4 +9,5 @@ import java.util.Collection;
 public interface ProfileRepository extends JpaRepository<Profile, Long>, PagingAndSortingRepository<Profile, Long> {
     Collection<Profile> findByAccountUsername(String username);
     Profile findByNameAndAccountUsername(String name,String username);
+    Profile findByName(String name);
 }

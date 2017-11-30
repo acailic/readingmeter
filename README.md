@@ -43,12 +43,7 @@ requires a signed certificate certificate and a certificate password : $ keytool
  [IN PROGRESS]
 Spring MVC provides   support for unit testing HTTP endpoints.
 
-## Resources
-
--  Reference documentation - [html](http://docs.spring.io/spring-hateoas/docs/current/reference/html/), [pdf](http://docs.spring.io/spring-hateoas/docs/current/reference/pdf/spring-hateoas-reference.pdf)
-- [JavaDoc](http://docs.spring.io/spring-hateoas/docs/current-SNAPSHOT/api/)
-- [Getting started guide](https://spring.io/guides/gs/rest-hateoas/)
-```
+ ```
  http://localhost:8080/connections/1 GET
 {
     "connection": {
@@ -241,3 +236,11 @@ Spring MVC provides   support for unit testing HTTP endpoints.
     }
 }
 ```
+
+Future tasks: Pagination to add (already in repositories)
+              
+## Resources
+
+-  Reference documentation - [html](http://docs.spring.io/spring-hateoas/docs/current/reference/html/), [pdf](http://docs.spring.io/spring-hateoas/docs/current/reference/pdf/spring-hateoas-reference.pdf)
+- [JavaDoc](http://docs.spring.io/spring-hateoas/docs/current-SNAPSHOT/api/)
+- [Getting started guide](https://spring.io/guides/gs/rest-hateoas/)

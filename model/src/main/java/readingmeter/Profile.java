@@ -8,7 +8,7 @@ import javax.validation.constraints.NotNull;
 import java.util.Set;
 
 @Entity
-@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"name", "id"}))
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"name","id" }))
 public class Profile {
 
     @Id
@@ -22,9 +22,6 @@ public class Profile {
     @OneToMany(cascade = {CascadeType.ALL})
     private Set<Fraction> fractions;
 
-    @JsonIgnore
-    @OneToMany(cascade = {CascadeType.ALL})
-    private Set<Connection> connections;
 
     @JsonIgnore
     @ManyToOne
@@ -63,9 +60,6 @@ public class Profile {
         return id;
     }
 
-    public Set<Connection> getConnections() {
-        return connections;
-    }
 
     public Account getAccount() {
         return account;
@@ -89,8 +83,7 @@ public class Profile {
         if (id != null ? !id.equals(profile.id) : profile.id != null) return false;
         if (name != null ? !name.equals(profile.name) : profile.name != null) return false;
         if (fractions != null ? !fractions.equals(profile.fractions) : profile.fractions != null) return false;
-        if (connections != null ? !connections.equals(profile.connections) : profile.connections != null) return false;
-        if (account != null ? !account.equals(profile.account) : profile.account != null) return false;
+       if (account != null ? !account.equals(profile.account) : profile.account != null) return false;
         return uri != null ? uri.equals(profile.uri) : profile.uri == null;
     }
 
@@ -99,7 +92,6 @@ public class Profile {
         int result = id != null ? id.hashCode() : 0;
         result = 31 * result + (name != null ? name.hashCode() : 0);
         result = 31 * result + (fractions != null ? fractions.hashCode() : 0);
-        result = 31 * result + (connections != null ? connections.hashCode() : 0);
         result = 31 * result + (account != null ? account.hashCode() : 0);
         result = 31 * result + (uri != null ? uri.hashCode() : 0);
         return result;
